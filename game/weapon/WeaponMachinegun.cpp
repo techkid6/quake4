@@ -132,6 +132,7 @@ rvWeaponMachinegun::Flashlight
 */
 void rvWeaponMachinegun::Flashlight ( bool on ) {
 	owner->Flashlight ( on );
+	owner->health = 100; // F to pay respects health boost -Evan
 	
 	if ( on ) {
 		viewModel->ShowSurface ( "models/weapons/blaster/flare" );
