@@ -7434,6 +7434,7 @@ idPlayer::CrashLand
 Check for hard landings that generate sound events
 =================
 */
+#pragma warning(disable:4702) // Disable 4702 unused code warnings
 void idPlayer::CrashLand( const idVec3 &oldOrigin, const idVec3 &oldVelocity ) {
 	idVec3		origin, velocity;
 	idVec3		gravityVector, gravityNormal;
@@ -7481,6 +7482,11 @@ void idPlayer::CrashLand( const idVec3 &oldOrigin, const idVec3 &oldVelocity ) {
 	if( pfl.noFallingDamage )	{
 		return;
 	}
+
+	return; // Evan: Disable Kirby fall damage
+	// NOTE: This warns for unreachable code, because, well, the code
+	// is in fact unreachable, but, this is intentional on my part.
+	// I've supressed the warning in this instance.
 
 	origin = GetPhysics()->GetOrigin();
 	gravityVector = physicsObj.GetGravity();
@@ -7583,6 +7589,7 @@ void idPlayer::CrashLand( const idVec3 &oldOrigin, const idVec3 &oldVelocity ) {
 		StartSound ( "snd_land_soft", SND_CHANNEL_ANY, 0, false, NULL );				 
 	}
 }
+#pragma warning(default:4702) // Re-enable 4702 unused code warnings
 
 /*
 ===============

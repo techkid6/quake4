@@ -45,6 +45,10 @@ const int PMF_ALL_TIMES			= (PMF_TIME_WATERJUMP|PMF_TIME_LAND|PMF_TIME_KNOCKBACK
 
 int c_pmove = 0;
 
+// Evan: Kirby variables
+const int KIRB_MAX_JUMPS = 5;        // max jumps taken from SSBU
+int numJumps = 0;
+
 float idPhysics_Player::Pm_Accelerate( void ) {
 	return gameLocal.IsMultiplayer() ? PM_ACCELERATE_MP : PM_ACCELERATE_SP;
 }
@@ -1122,6 +1126,8 @@ void idPhysics_Player::CheckGround( bool checkStuck ) {
 	// let the entity know about the collision
 	if ( self ) {
 		self->Collide( groundTrace, current.velocity );
+		// Evan: HMM
+
 	}
 
 	if ( groundEntityPtr.GetEntity() ) {
@@ -1279,10 +1285,19 @@ bool idPhysics_Player::CheckJump( void ) {
 		return false;
 	}
 
-	// must wait for jump to be released
-	if ( current.movementFlags & PMF_JUMP_HELD ) {
+	// Evan: Start Kirby Jump logic
+	if ( numJumps > KIRB_MAX_JUMPS ) {
+		// Jump count too high, no jump for you!
 		return false;
 	}
+
+	// must wait for jump to be released
+	if ( current.movementFlags & PMF_JUMP_HELD ) { // Evan: Kirby's jump multiplier goes here
+		gameLocal.Printf("Jump not released!!! %i\n", numJumps);
+		return false;
+	}
+
+	
 
 	// don't jump if we can't stand up
 	if ( current.movementFlags & PMF_DUCKED ) {
@@ -1302,6 +1317,9 @@ bool idPhysics_Player::CheckJump( void ) {
 	current.crouchSlideTime = 0;
 // RAVEN END
 
+	// Evan: Add jump
+	numJumps++;
+	gameLocal.Printf("You jumped! %i\n", numJumps);
 	return true;
 }
 
@@ -1471,6 +1489,14 @@ void idPhysics_Player::MovePlayer( int msec ) {
 		current.movementFlags &= ~PMF_JUMP_HELD;
 	}
 
+	// Evan - Unhold jump once you hit the top of the jumps
+	if ( current.movementFlags & PMF_JUMP_HELD ) {
+		if ( current.velocity.z < 0 ) {
+			gameLocal.Printf("End of the jump (z < 0)\n");
+			current.movementFlags &= ~PMF_JUMP_HELD;
+		}
+	}
+
 	// if no movement at all
 	if ( current.movementType == PM_FREEZE ) {
 		return;
@@ -1572,6 +1598,9 @@ void idPhysics_Player::MovePlayer( int msec ) {
 		idPhysics_Player::AirMove();
 	}
 
+	// Evan - Test jumping outside of the jump itself
+	idPhysics_Player::CheckJump();
+
 // RAVEN BEGIN
 // ddynerman: water disabled in MP
 	if( !gameLocal.isMultiplayer ) {
@@ -1585,6 +1614,12 @@ void idPhysics_Player::MovePlayer( int msec ) {
 	current.velocity += current.pushVelocity;
 	current.lastPushVelocity = current.pushVelocity;
 	current.pushVelocity.Zero();
+
+	// Evan - Reset max jumps when on ground (this works!)
+	if (HasGroundContacts()) {
+		gameLocal.Printf("Has ground contacts %i\n", numJumps);
+		numJumps = 0;
+	}
 }
 
 
