@@ -1596,10 +1596,11 @@ void idPhysics_Player::MovePlayer( int msec ) {
 	else {
 		// airborne
 		idPhysics_Player::AirMove();
+		// Evan - Test jumping outside of the jump itself
+		idPhysics_Player::CheckJump();
 	}
 
-	// Evan - Test jumping outside of the jump itself
-	idPhysics_Player::CheckJump();
+	
 
 // RAVEN BEGIN
 // ddynerman: water disabled in MP
