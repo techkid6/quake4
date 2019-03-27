@@ -5,4 +5,4 @@ Move `kirby` directory into your Quake 4 install folder (the one that contains `
 
 ## Functionality
 * Kirby Jump
-** Jump up to 6 times in a row to get past obstacles!
+    * Jump up to 6 times in a row to get past obstacles!
