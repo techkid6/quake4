@@ -3038,6 +3038,65 @@ void Cmd_ClientOverflowReliable_f( const idCmdArgs& args ) {
 }
 #endif
 
+idEntity* getTargetEntity(idPlayer* player) {
+	if (player) {
+		trace_t	trace;
+		idVec3 start = player->GetEyePosition();
+		idVec3 end = start + player->viewAngles.ToForward() * 2048.0f;
+		gameLocal.TracePoint(player, trace, start, end, MASK_SHOT_RENDERMODEL, player);
+		return gameLocal.GetTraceEntity(trace);
+	}
+	return NULL;
+}
+
+// Evan Begin
+void Cmd_Voodoo_f( const idCmdArgs& args ) {
+	idPlayer* player = gameLocal.GetLocalPlayer();
+	idEntity* found = getTargetEntity(player);
+	if ( found ) {
+		if ( found->IsType( idAI::GetClassType() ) ) {
+			idAI* theAI = static_cast<idAI*>( found );
+			if ( theAI ) {
+				gameLocal.Printf( "%s (%s)\n", "Voodoo magic is being applied :o", theAI->GetName() );
+				if ( theAI->CheckActions() ) {
+					gameLocal.Printf( "Magic applied!\n" );
+				}
+				else {
+					gameLocal.Printf( "Magic not found D:\n" );
+				}
+			}
+		}
+	}
+}
+
+void Cmd_Stomp_f( const idCmdArgs& args ) {
+	idPlayer* player = gameLocal.GetLocalPlayer();
+	if ( player ) {
+		player->GetPhysics()->SetLinearVelocity(idVec3(0, 0, 100));
+		// gameLocal.Printf("%f", player->GetPhysics()->GetGravity().z);
+		// player->GetPhysics()->SetGravity(idVec3(0, 0, 100));
+	}
+}
+
+void Cmd_Freeze_f(const idCmdArgs& args) {
+	idPlayer* player = gameLocal.GetLocalPlayer();
+	idEntity* found = getTargetEntity( player );
+	if ( found ) {
+		if ( found->GetPhysics()->IsType( idPhysics_Monster::GetClassType() ) ) {
+			gameLocal.Printf("%s (%s)\n", "Freezing entity", found->GetName());
+			found->GetPhysics()->PutToRest();
+			if ( found->IsType( idAI::GetClassType() ) ) {
+				idAI* theAI = static_cast<idAI*>( found );
+				if ( theAI ) {
+					theAI->
+				}
+			}
+		}
+	}
+}
+
+
+
 /*
 =================
 idGameLocal::InitConsoleCommands
@@ -3232,7 +3291,10 @@ void idGameLocal::InitConsoleCommands( void ) {
 	cmdSystem->AddCommand( "buyMenu",				Cmd_ToggleBuyMenu_f,		CMD_FL_GAME,				"Toggle buy menu (if in a buy zone and the game type supports it)" );
 	cmdSystem->AddCommand( "buy",					Cmd_BuyItem_f,				CMD_FL_GAME,				"Buy an item (if in a buy zone and the game type supports it)" );
 // RITUAL END
-
+// Evan begin
+	cmdSystem->AddCommand("voodoo", Cmd_Voodoo_f, CMD_FL_GAME, "Force the monster in your cursor to ATTACK");
+	cmdSystem->AddCommand("stomp", Cmd_Stomp_f, CMD_FL_GAME, "ROCK ROCK ROCK ROCK ROCK ROCK");
+	cmdSystem->AddCommand("cold", Cmd_Freeze_f, CMD_FL_GAME, "Brrrrrr");
 }
 
 /*

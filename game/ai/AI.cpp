@@ -2925,6 +2925,16 @@ void idAI::PushWithAF( void ) {
 
 /*
 ================
+idAI::DefaultAttack
+================
+*/
+void idAI::DefaultAttack (idEntity* defender) {
+	// Default impl in case this monster hasn't been configured <3
+	return;
+}
+
+/*
+================
 idAI::GetMuzzle
 ================
 */

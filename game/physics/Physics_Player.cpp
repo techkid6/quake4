@@ -1293,7 +1293,6 @@ bool idPhysics_Player::CheckJump( void ) {
 
 	// must wait for jump to be released
 	if ( current.movementFlags & PMF_JUMP_HELD ) { // Evan: Kirby's jump multiplier goes here
-		gameLocal.Printf("Jump not released!!! %i\n", numJumps);
 		return false;
 	}
 
@@ -1319,7 +1318,6 @@ bool idPhysics_Player::CheckJump( void ) {
 
 	// Evan: Add jump
 	numJumps++;
-	gameLocal.Printf("You jumped! %i\n", numJumps);
 	return true;
 }
 
@@ -1492,7 +1490,6 @@ void idPhysics_Player::MovePlayer( int msec ) {
 	// Evan - Unhold jump once you hit the top of the jumps
 	if ( current.movementFlags & PMF_JUMP_HELD ) {
 		if ( current.velocity.z < 0 ) {
-			gameLocal.Printf("End of the jump (z < 0)\n");
 			current.movementFlags &= ~PMF_JUMP_HELD;
 		}
 	}
@@ -1618,7 +1615,6 @@ void idPhysics_Player::MovePlayer( int msec ) {
 
 	// Evan - Reset max jumps when on ground (this works!)
 	if (HasGroundContacts()) {
-		gameLocal.Printf("Has ground contacts %i\n", numJumps);
 		numJumps = 0;
 	}
 }

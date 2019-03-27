@@ -1016,13 +1016,16 @@ public:
 	void					AnnounceGrenade					( void );
 	void					AnnounceGrenadeThrow			( void );
 
+	virtual void			DefaultAttack					( idEntity* defender );
+
 	/*
 	===============================================================================
 									Actions
 	===============================================================================
 	*/
 
-protected:
+// LOL I'M FUNNY! THIS IS PUBLIC INSTEAD OF PROTECTED BECAUSE FUCK PUTTING CODE IN THE RIGHT PLACES
+public:
 
 	rvAIActionTimer			actionTimerRangedAttack;
 	rvAIActionTimer			actionTimerEvade;
